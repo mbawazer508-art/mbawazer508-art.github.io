@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام تقرير المستشفى الطارئ - Roblox ER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 100%);
+            direction: rtl;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            border-top: 8px solid #1a472a;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #c9a227;
+            padding-bottom: 20px;
+        }
+        
+        .logo {
+            margin-bottom: 15px;
+        }
+        
+        .logo img {
+            width: 100px;
+            height: auto;
+        }
+        
+        h1 {
+            color: #1a472a;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .ministry-name {
+            color: #c9a227;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        h3 {
+            color: #1a472a;
+            border-right: 5px solid #c9a227;
+            padding-right: 12px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1a472a;
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #c9a227;
+            box-shadow: 0 0 5px rgba(201, 162, 39, 0.3);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-submit, .btn-download {
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-submit {
+            background-color: #1a472a;
+            color: #fff;
+        }
+        
+        .btn-submit:hover {
+            background-color: #0f2a18;
+        }
+        
+        .btn-submit:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .btn-download {
+            background-color: #c9a227;
+            color: #1a472a;
+        }
+        
+        .btn-download:hover {
+            background-color: #b8931d;
+        }
+        
+        .btn-download:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: #c8e6c9;
+            color: #1a472a;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            border-right: 5px solid #1a472a;
+        }
+        
+        .reports-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 3px solid #c9a227;
+        }
+        
+        .report-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-right: 5px solid #1a472a;
+        }
+        
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .report-title {
+            font-weight: bold;
+            color: #1a472a;
+        }
+        
+        .report-time {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .report-details {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .btn-delete {
+            background-color: #d32f2f;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .btn-delete:hover {
+            background-color: #b71c1c;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='55' fill='%231a472a'/%3E%3Ccircle cx='60' cy='60' r='50' fill='%23c9a227'/%3E%3Cpath d='M60 30 L80 50 L70 50 L70 80 L50 80 L50 50 L40 50 Z' fill='%231a472a'/%3E%3C/svg%3E" alt="Emergency Response">
+        </div>
+        <h1>مستشفى الطوارئ</h1>
+        <div class="ministry-name">نظام تقرير الخدمات الطبية الطارئة - Roblox ER</div>
+    </div>
+    
+    <div class="success-message" id="successMessage">
+        ✓ تم حفظ التقرير بنجاح!
+    </div>
+
+    <form id="reportForm">
+
+        <h3>👤 بيانات المريض</h3>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="patientName">اسم المريض *</label>
+                <input type="text" id="patientName" name="patientName" placeholder="أدخل اسم المريض الكامل" required>
+                <div class="error-message" id="patientNameError">الحقل مطلوب</div>
+            </div>
+
+            <div class="form-group">
+                <label for="nationalId">رقم الهوية / الإقامة *</label>
+                <input type="text" id="nationalId" name="nationalId" placeholder="مثال: 1234567890" required>
+                <div class="error-message" id="nationalIdError">الحقل مطلوب</div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="age">العمر</label>
+                <input type="number" id="age" name="age" min="0" max="150" placeholder="بالسنوات">
+            </div>
+
+            <div class="form-group">
+                <label for="gender">الجنس</label>
+                <select id="gender" name="gender">
+                    <option value="">-- اختر --</option>
+                    <option value="ذكر">ذكر</option>
+                    <option value="أنثى">أنثى</option>
+                </select>
+            </div>
+        </div>
+
+        <h3>🏥 بيانات المرفق الصحي</h3>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="facility">اسم المستشفى *</label>
+                <input type="text" id="facility" name="facility" placeholder="مثال: مستشفى الطوارئ الرئيسي" required>
+                <div class="error-message" id="facilityError">الحقل مطلوب</div>
+            </div>
+
+            <div class="form-group">
+                <label for="department">القسم *</label>
+                <select id="department" name="department" required>
+                    <option value="">-- اختر القسم --</option>
+                    <option value="ER Lobby">ER Lobby - استقبال الطوارئ</option>
+                    <option value="Triage">Triage - فحص سريع</option>
+                    <option value="Trauma Center">Trauma Center - قسم الرضوض</option>
+                    <option value="Surgery">Surgery - غرفة العمليات</option>
+                    <option value="ICU">ICU - العناية المكثفة</option>
+                    <option value="Pediatrics">Pediatrics - طب الأطفال</option>
+                    <option value="Cardiology">Cardiology - أمراض القلب</option>
+                    <option value="Orthopedics">Orthopedics - العظام</option>
+                    <option value="Neurology">Neurology - الأعصاب</option>
+                    <option value="Radiology">Radiology - الأشعات</option>
+                    <option value="Lab">Lab - المختبر</option>
+                    <option value="Pharmacy">Pharmacy - الصيدلية</option>
+                </select>
+                <div class="error-message" id="departmentError">الحقل مطلوب</div>
+            </div>
+        </div>
+
+        <h3>📅 بيانات الحالة الطارئة</h3>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="visitDate">تاريخ الاستقبال *</label>
+                <input type="date" id="visitDate" name="visitDate" required>
+                <div class="error-message" id="visitDateError">الحقل مطلوب</div>
+            </div>
+
+            <div class="form-group">
+                <label for="visitTime">وقت الاستقبال *</label>
+                <input type="time" id="visitTime" name="visitTime" required>
+                <div class="error-message" id="visitTimeError">الحقل مطلوب</div>
+            </div>
+        </div>
+
+        <h3>🔍 التشخيص والتقرير الطبي</h3>
+
+        <div class="form-group">
+            <label for="complaint">الشكوى الرئيسية / سبب الحضور *</label>
+            <textarea id="complaint" name="complaint" placeholder="وصف الأعراض والحالة الطارئة" required></textarea>
+            <div class="error-message" id="complaintError">الحقل مطلوب</div>
+        </div>
+
+        <div class="form-group">
+            <label for="diagnosis">التشخيص النهائي *</label>
+            <textarea id="diagnosis" name="diagnosis" placeholder="التشخيص الطبي للحالة" required></textarea>
+            <div class="error-message" id="diagnosisError">الحقل مطلوب</div>
+        </div>
+
+        <div class="form-group">
+            <label for="treatment">الخطة العلاجية</label>
+            <textarea id="treatment" name="treatment" placeholder="الأدوية والعلاجات الموصوفة والإجراءات المتخذة"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="notes">ملاحظات إضافية</label>
+            <textarea id="notes" name="notes" placeholder="أي ملاحظات أو توصيات أخرى"></textarea>
+        </div>
+
+        <h3>👨‍⚕️ بيانات الطبيب</h3>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="doctorName">اسم الطبيب *</label>
+                <input type="text" id="doctorName" name="doctorName" placeholder="الاسم الكامل" required>
+                <div class="error-message" id="doctorNameError">الحقل مطلوب</div>
+            </div>
+
+            <div class="form-group">
+                <label for="doctorId">رقم الترخيص الطبي *</label>
+                <input type="text" id="doctorId" name="doctorId" placeholder="رقم الترخيص" required>
+                <div class="error-message" id="doctorIdError">الحقل مطلوب</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="specialization">التخصص الطبي</label>
+            <input type="text" id="specialization" name="specialization" placeholder="تخصص الطبيب">
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn-submit" id="submitBtn">💾 حفظ التقرير</button>
+            <button type="button" class="btn-download" id="downloadBtn">📥 تحميل كـ PDF</button>
+        </div>
+    </form>
+
+    <div class="reports-section" id="reportsSection" style="display: none;">
+        <h3>📋 التقارير المحفوظة</h3>
+        <div id="reportsList"></div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('reportForm');
+    const successMessage = document.getElementById('successMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const reportsSection = document.getElementById('reportsSection');
+    const reportsList = document.getElementById('reportsList');
+
+    // تحميل التقارير عند فتح الصفحة
+    loadReports();
+
+    function validateForm() {
+        const requiredFields = [
+            'patientName',
+            'nationalId',
+            'facility',
+            'department',
+            'visitDate',
+            'visitTime',
+            'complaint',
+            'diagnosis',
+            'doctorName',
+            'doctorId'
+        ];
+
+        let isValid = true;
+
+        requiredFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            
+            if (!field.value.trim()) {
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                }
+                isValid = false;
+            } else {
+                if (errorDiv) {
+                    errorDiv.style.display = 'none';
+                }
+            }
+        });
+
+        return isValid;
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!validateForm()) {
+            alert('الرجاء ملء جميع الحقول المطلوبة (المشار لها بـ *)');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = '⏳ جاري الحفظ...';
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        const reports = JSON.parse(localStorage.getItem('healthReports') || '[]');
+        data.id = Date.now();
+        data.timestamp = new Date().toLocaleString('ar-SA');
+        reports.push(data);
+        localStorage.setItem('healthReports', JSON.stringify(reports));
+
+        setTimeout(() => {
+            successMessage.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = '💾 حفظ التقرير';
+            
+            form.reset();
+            loadReports();
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        }, 1500);
+    });
+
+    function loadReports() {
+        const reports = JSON.parse(localStorage.getItem('healthReports') || '[]');
+        
+        if (reports.length === 0) {
+            reportsSection.style.display = 'none';
+            return;
+        }
+
+        reportsSection.style.display = 'block';
+        reportsList.innerHTML = '';
+
+        reports.reverse().forEach(report => {
+            const reportDiv = document.createElement('div');
+            reportDiv.className = 'report-item';
+            reportDiv.innerHTML = 
+                <div class="report-header">
+                    <div>
+                        <div class="report-title">👤 ${report.patientName}</div>
+                        <div class="report-time">📅 ${report.timestamp}</div>
+                    </div>
+                    <button type="button" class="btn-delete" onclick="deleteReport(${report.id})">حذف</button>
+                </div>
+                <div class="report-details">
+                    <strong>🏥 المستشفى:</strong> ${report.facility}<br>
+                    <strong>📍 القسم:</strong> ${report.department}<br>
+                    <strong>🏷️ رقم الهوية:</strong> ${report.nationalId}<br>
+                    <strong>👨‍⚕️ الطبيب:</strong> ${report.doctorName} (${report.doctorId})<br>
+                    <strong>📋 التشخيص:</strong> ${report.diagnosis.substring(0, 100)}...<br>
+                </div>
+            ;
+            reportsList.appendChild(reportDiv);
+        });
+    }
+
+    function deleteReport(id) {
+        if (confirm('هل تريد حذف هذا التقرير؟')) {
+            let reports = JSON.parse(localStorage.getItem('healthReports') || '[]');
+            reports = reports.filter(r => r.id !== id);
+            localStorage.setItem('healthReports', JSON.stringify(reports));
+            loadReports();
+        }
+    }
+
+    downloadBtn.addEventListener('click', function() {
+        const reports = JSON.parse(localStorage.getItem('healthReports') || '[]');
+        
+        if (reports.length === 0) {
+            alert('لا توجد تقارير محفوظة');
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "اسم المريض,رقم الهوية,العمر,الجنس,المستشفى,القسم,التاريخ,الوقت,الشكوى,التشخيص,الطبيب,رقم الترخيص,التاريخ والوقت\n";
+
+        reports.forEach(report => {
+            const row = [
+                report.patientName,
+                report.nationalId,
+                report.age || '',
+                report.gender || '',
+                report.facility,
+                report.department,
+                report.visitDate,
+                report.visitTime,
+                report.complaint.replace(/,/g, '؛'),
+                report.diagnosis.replace(/,/g, '؛'),
+                report.doctorName,
+                report.doctorId,
+                report.timestamp
+            ].map(field => "${field}").join(',');
+            
+            csvContent += row + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", تقارير-الطوارئ-${new Date().toISOString().split('T')[0]}.csv);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    const inputs = form.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            const errorDiv = document.getElementById(this.id + 'Error');
+            if (errorDiv && !this.value.trim()) {
+                errorDiv.style.display = 'block';
+            } else if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        });
+    });
+
+    const visitDateInput = document.getElementById('visitDate');
+    const today = new Date().toISOString().split('T')[0];
+    visitDateInput.setAttribute('max', today);
+</script>
+
+</body>
