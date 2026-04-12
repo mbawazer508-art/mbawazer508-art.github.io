@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Emergency Town</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Cairo', sans-serif;
+    background: #f1f5f9;
+}
+
+/* Header */
+.header {
+    background: #065f46;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.header p {
+    margin: 5px 0 0;
+    font-size: 14px;
+}
+
+/* Grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 20px;
+}
+
+/* Card */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+/* Form */
+.formBox {
+    display: none;
+    padding: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #065f46;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>بوابة خدمات Emergency Town</h1>
+    <p>تقديم الطلبات الحكومية بسهولة</p>
+</div>
+
+<div class="grid" id="home">
+
+    <div class="card" onclick="openForm('id')">
+        <div class="icon">🪪</div>
+        <div>الهوية</div>
+    </div>
+
+    <div class="card" onclick="openForm('drive')">
+        <div class="icon">🚗</div>
+        <div>رخصة قيادة</div>
+    </div>
+
+    <div class="card" onclick="openForm('weapon')">
+        <div class="icon">🔫</div>
+        <div>رخصة سلاح</div>
+    </div>
+
+    <div class="card" onclick="openForm('report')">
+        <div class="icon">🚨</div>
+        <div>بلاغ للشرطة</div>
+    </div>
+
+</div>
+
+<div class="formBox" id="formBox"></div>
+
+<script>
+function openForm(type){
+
+    document.getElementById("home").style.display = "none";
+
+    let title = "";
+    let form = "";
+
+    if(type === "id"){
+        title = "تقديم هوية";
+        form = `
+        <input id="name" placeholder="الاسم">
+        <input id="age" placeholder="العمر">
+        `;
+    }
+
+    if(type === "drive"){
+        title = "رخصة قيادة";
+        form = `
+        <input id="name" placeholder="الاسم">
+        <input id="exp" placeholder="خبرة القيادة">
+        `;
+    }
+
+    if(type === "weapon"){
+        title = "رخصة سلاح";
+        form = `
+        <input id="name" placeholder="الاسم">
+        <input id="reason" placeholder="سبب الطلب">
+        `;
+    }
+
+    if(type === "report"){
+        title = "بلاغ للشرطة";
+        form = `
+        <input id="name" placeholder="اسمك">
+        <input id="details" placeholder="تفاصيل البلاغ">
+        `;
+    }
+
+    form += `<button onclick="send('${title}')">إرسال 🚀</button>`;
+
+    document.getElementById("formBox").innerHTML = `<h3>${title}</h3>` + form;
+    document.getElementById("formBox").style.display = "block";
+}
+
+function send(title){
+
+    const webhook = "https://discord.com/api/webhooks/1492085932109856859/WA6fsAV9NByRAd57Unj4GZLLbrYHXgr0SCCjK-UObKH9q7NqGgFq-qW7UiWGqM_iv1nU";
+
+    let inputs = document.querySelectorAll("#formBox input");
+
+    for (let i of inputs){
+        if(!i.value){
+            alert("❌ عبي كل البيانات");
+            return;
+        }
+    }
+
+    let content = "📩 طلب جديد\n📂 " + title + "\n\n";
+
+    inputs.forEach(i=>{
+        content += "• " + i.placeholder + ": " + i.value + "\n";
+    });
+
+    fetch(webhook,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({content})
+    })
+    .then(()=>{
+        alert("✅ تم الإرسال بنجاح");
+        location.reload();
+    })
+    .catch(()=>{
+        alert("❌ فشل الإرسال");
+    });
+}
+</script>
+
+</body>
+</html>
